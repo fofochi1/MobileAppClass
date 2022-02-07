@@ -56,6 +56,7 @@ class _RandomWordsState extends State<RandomWords> {
 
   Widget _buildRow(WordPair pair){
     return ListTile(
+      textColor: Colors.green,
       title: Text(
         pair.asPascalCase, 
         style: _biggerFont,
