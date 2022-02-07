@@ -19,3 +19,20 @@ class DatabaseService {
     });
   }
 }
+
+class SendPost{
+     DateTime currentTime = new DateTime.now();
+
+     final String uid;
+     SendPost({ required this.uid });
+     final CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+
+     Future updatePost(String text) async {
+       return await posts.doc(uid).set({
+         'user': uid,
+         'post': text,
+         'date': currentTime,
+       });
+     }
+
+}

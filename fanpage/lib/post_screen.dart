@@ -1,6 +1,8 @@
+import 'package:fanpage/database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+final FirebaseAuth auth = FirebaseAuth.instance;
 
 
 class PostScreen extends StatefulWidget {
@@ -30,6 +32,8 @@ class _MyCustomFormState extends State<MyCustomForm> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final myController = TextEditingController();
+  late String postText;
+
 
   @override
   void dispose() {
@@ -48,12 +52,17 @@ class _MyCustomFormState extends State<MyCustomForm> {
         padding: const EdgeInsets.all(16.0),
         child: TextField(
           controller: myController,
+          onChanged: (value) {
+              postText = value;
+           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
         // When the user presses the button, show an alert dialog containing
         // the text that the user has entered into the text field.
-        onPressed: () {
+        onPressed: () async {
+          final User user = auth.currentUser;
+          await SendPost(uid: user.uid).updatePost(postText);
           showDialog(
             context: context,
             builder: (context) {
