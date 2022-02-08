@@ -16,6 +16,7 @@ class DatabaseService {
       'firstname': firstname,
       'lastname': lastname,
       'registration': currentTime,
+      'role': 'customer',
     });
   }
 }
@@ -28,7 +29,7 @@ class SendPost{
      final CollectionReference posts = FirebaseFirestore.instance.collection('posts');
 
      Future updatePost(String text) async {
-       return await posts.doc(uid).set({
+       return await posts.add({
          'user': uid,
          'post': text,
          'date': currentTime,
