@@ -7,6 +7,7 @@ import 'package:fanpage/post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 User? loggedinUser;
 
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _auth = FirebaseAuth.instance;
+  final googleSignIn = GoogleSignIn();
 
   void initState() {
     super.initState();
@@ -45,52 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
       admin = true;
     }
       return buildButton(context, admin);
-    
-    
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     leading: null,
-    //     actions: <Widget>[
-    //       IconButton(
-    //           icon: Icon(Icons.close),
-    //           onPressed: () {
-    //             _auth.signOut();
-    //             Navigator.pop(context);
-
-    //             //Implement logout functionality
-    //           }),      
-
-
-
-    //             // ElevatedButton(
-    //             //   onPressed: () {
-    //             //     Navigator.push(
-    //             //       context,
-    //             //       MaterialPageRoute(builder: (context) =>  PostScreen()),
-    //             //     );
-    //             //   },
-    //             //   child: Icon(Icons.add, color: Colors.white),
-    //             //   style: ElevatedButton.styleFrom(
-    //             //     shape: CircleBorder(),
-    //             //     padding: EdgeInsets.all(20),
-    //             //     primary: Colors.blue, // <-- Button color
-    //             //     onPrimary: Colors.red, // <-- Splash color
-    //             //     ),
-    //             //   )
-
-
-                  
-    //     ],
-    //     title: Text("Welcome"),
-    //     backgroundColor: Colors.lightBlueAccent,
-    //   ),
-    //   body: Center(
-    //     child: Text(
-    //       "Welcome User",
-    //       style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget buildButton(BuildContext context, bool admin){
@@ -106,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
+                googleSignIn.disconnect();
                 _auth.signOut();
                 Navigator.pop(context);
 

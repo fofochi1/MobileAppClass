@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'rounded_button.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/material.dart';
+import 'authentication.dart';
 
 //code for designing the UI of our text field where the user writes his email id or password
 
@@ -24,11 +25,13 @@ const kTextFieldDecoration = InputDecoration(
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
+
 }
 
 final _auth = FirebaseAuth.instance;
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isSigningIn = false;
   late String email;
   late String password;
   bool showSpinner = false;
@@ -49,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     email = value;
-                    //Do something with the user input.
                   },
                   decoration: kTextFieldDecoration.copyWith(
                     hintText: 'Enter your email',
@@ -62,7 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     password = value;
-                    //Do something with the user input.
                   },
                   decoration: kTextFieldDecoration.copyWith(
                       hintText: 'Enter your password.')),
@@ -89,6 +90,65 @@ class _LoginScreenState extends State<LoginScreen> {
                       showSpinner = false;
                     });
                   }),
+
+                 Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: _isSigningIn
+          ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            )
+          : OutlinedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                ),
+              ),
+              onPressed: () async {
+                setState(() {
+                  _isSigningIn = true;
+                });
+
+                User? user = (await signInWithGoogle() as User?);
+                
+                // TODO: Add a method call to the Google Sign-In authentication
+
+                setState(() {
+                  _isSigningIn = false;
+                });
+
+                if(user != null){
+                    Navigator.pushNamed(context, 'home_screen');
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: AssetImage("assets/google_logo.png"),
+                      height: 35.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Sign in with Google',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            ),
             ],
           ),
         ),
