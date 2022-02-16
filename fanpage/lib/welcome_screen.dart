@@ -17,19 +17,28 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                RoundedButton(
-                  color: Colors.blueGrey,
-                  title: 'Log In',
+                TextButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(16.0),
+                    primary: Color.fromARGB(255, 4, 125, 173),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, 'login_screen');
                   },
+                  child: const Text('Log In'),
                 ),
-                RoundedButton(
-                    color: Colors.blueAccent,
-                    title: 'Register',
+                TextButton(
+                    style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(16.0),
+                    primary: Color.fromARGB(255, 4, 125, 173),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
                     onPressed: () {
                       Navigator.pushNamed(context, 'registration_screen');
-                    }),
+                    },
+                    child: const Text('Register'),
+                    ),
               ]),
         ));
   }

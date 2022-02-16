@@ -70,9 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 24.0,
               ),
-              RoundedButton(
-                  color: Colors.lightBlueAccent,
-                  title: 'Log In',
+              TextButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(16.0),
+                    primary: Color.fromARGB(255, 4, 125, 173),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
                   onPressed: () async {
                     setState(() {
                       showSpinner = true;
@@ -89,7 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     setState(() {
                       showSpinner = false;
                     });
-                  }),
+                  },
+                  child: const Text('Register'),
+
+                  ),
 
                  Padding(
       padding: const EdgeInsets.only(bottom: 16.0),

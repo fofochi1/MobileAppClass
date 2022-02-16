@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 
 User? loggedinUser;
 
@@ -62,12 +63,14 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                googleSignIn.disconnect();
-                _auth.signOut();
-                Navigator.pop(context);
+                showAlertDialog(context);
+                // googleSignIn.disconnect();
+                // _auth.signOut();
+                // Navigator.pop(context);
 
                 //Implement logout functionality
-              }),      
+              }
+              ),      
             ],
       ),
 
@@ -84,9 +87,22 @@ class _HomeScreenState extends State<HomeScreen> {
              children: snapshot.data!.docs.map((document){
                 return Center(
                   child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue,
+                        ),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                     width: MediaQuery.of(context).size.width/1.2,
-                    height: MediaQuery.of(context).size.height/6,
-                    child: Text(document['post']),
+                    height: MediaQuery.of(context).size.height/10,
+                    //child: Text(document['post']),
+                    child: Column(
+                      children: [
+                      Text(document['post'], textAlign: TextAlign.center,),
+                      Text(DateFormat('yyyy-MM-dd – kk:mm').format(document['date'].toDate()), textAlign: TextAlign.center,)
+                      ]
+                    )
+                    
                      
                             
                     ),
@@ -122,10 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
+                showAlertDialog(context);
+                // _auth.signOut();
+                // Navigator.pop(context);
 
-                //Implement logout functionality
               }),      
             ],
       ),
@@ -159,5 +175,44 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     
   }
+
+  showAlertDialog(BuildContext context) {
+
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: Text("Cancel"),
+    onPressed:  () {
+        Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: Text("Logout"),
+    onPressed:  () {
+      googleSignIn.disconnect();
+      _auth.signOut();
+      Navigator.pop(context);
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Are you sure"),
+    content: Text("Would you like to continue with logging off?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
   
 }
+
