@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <bitmap android:gravity="fill" android:src="@drawable/background"/>
-    </item>
+    <item android:drawable="@color/background_color"/> 
+    <!-- <item>
+        <bitmap 
+        android:gravity="fill" 
+        android:src="@mipmap/launch_image"
+        android:width="10dp"
+        android:height="10dp"/>
+    </item> -->
+<!-- <item name="android:windowSplashScreenBackground">@color/background_color</item>
+<item name="android:windowSplashScreenAnimatedIcon">@drawable/background</item> -->
+
 </layer-list>
