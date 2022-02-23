@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">947810461440-vi0fjn31uo3f2blmha1splrc48punkmq.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">947810461440</string>
+    <string name="google_api_key" translatable="false">AIzaSyAeSrTKroVBn4up9v5bPJeTYnI7jrz8NTs</string>
+    <string name="google_app_id" translatable="false">1:947810461440:android:21b8ac59212981c449b5e5</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAeSrTKroVBn4up9v5bPJeTYnI7jrz8NTs</string>
+    <string name="google_storage_bucket" translatable="false">fanpage-69494.appspot.com</string>
+    <string name="project_id" translatable="false">fanpage-69494</string>
+</resources>

@@ -160,8 +160,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     width: MediaQuery.of(context).size.width/1.2,
                     height: MediaQuery.of(context).size.height/6,
-                    child: Text(document['post']),
-                     
+                    child: Column(
+                      children: [
+                      Text(document['post'], textAlign: TextAlign.center,),
+                      Text(DateFormat('yyyy-MM-dd – kk:mm').format(document['date'].toDate()), textAlign: TextAlign.center,)
+                      ]
+                    )                     
                             
                     ),
                 );

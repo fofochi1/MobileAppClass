@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "947810461440",
+    "project_id": "fanpage-69494",
+    "storage_bucket": "fanpage-69494.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947810461440:android:21b8ac59212981c449b5e5",
+        "android_client_info": {
+          "package_name": "com.fanPage.fanpage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947810461440-vi0fjn31uo3f2blmha1splrc48punkmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeSrTKroVBn4up9v5bPJeTYnI7jrz8NTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947810461440-vi0fjn31uo3f2blmha1splrc48punkmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
