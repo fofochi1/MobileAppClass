@@ -32,6 +32,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final myController = TextEditingController();
+  late String content;
 
 
 
@@ -53,7 +54,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
         child: TextField(
           controller: myController,
           onChanged: (value) {
-              postText = value;
+              content = value;
            },
         ),
       ),
@@ -62,7 +63,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
         // the text that the user has entered into the text field.
         onPressed: () async {
           final User user = auth.currentUser;
-          await SendPost(uid: user.uid).updatePost(postText);
+          await SendPost(uid: user.uid).updatePost(content);
           showDialog(
             context: context,
             builder: (context) {

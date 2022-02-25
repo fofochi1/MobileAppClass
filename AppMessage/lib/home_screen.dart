@@ -5,6 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fanpage/conversation.dart';
 import 'package:fanpage/post_screen.dart';
+import 'package:fanpage/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -67,7 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 showAlertDialog(context);
               }
-              ),      
+              ),  
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => Profile()),
+                  );
+                },
+                icon: const Icon(Icons.account_circle),
+                ),    
             ],
       ),
 
