@@ -5,7 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart' as fdata;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:fanpage/home_screen.dart';
@@ -28,6 +28,7 @@ class ExtractArgumentsScreen extends StatelessWidget {
 
   static const routeName = '/extractArguments';
 
+
   @override
   Widget build(BuildContext context) {
     // Extract the arguments from the current ModalRoute
@@ -35,7 +36,7 @@ class ExtractArgumentsScreen extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     late String content;
     User user = FirebaseAuth.instance.currentUser;
-    final dbRef = FirebaseDatabase.instance.reference().child('posts');
+    final dbRef = fdata.FirebaseDatabase.instance.reference().child('posts');
     List<Map<dynamic, dynamic>> lists = [];
     final DocumentSnapshot document;
 
@@ -43,7 +44,6 @@ class ExtractArgumentsScreen extends StatelessWidget {
       appBar: AppBar(
         leading: null,
         title: Text(args.toID),
-        
       ),
 
        body: StreamBuilder(
@@ -118,7 +118,7 @@ class _MyCustomFormState extends State<MyCustomForm> {
   // of the TextField.
   final myController = TextEditingController();
   late String content;
-
+  late String rating;
 
 
   @override
@@ -130,25 +130,46 @@ class _MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    
+
+    Query snapshot = FirebaseFirestore.instance.collection('users').where("username", isEqualTo: widget.toID);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Send Message'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextField(
+      body: Column(
+        children: <Widget>[
+         TextField(
           controller: myController,
           onChanged: (value) {
               content = value;
            },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
+        TextField(
+          controller: myController,
+          onChanged: (value){
+              rating = value;
+          },
+        ),
+        
+      // floatingActionButton: 
+        FloatingActionButton(
         // When the user presses the button, show an alert dialog containing
         // the text that the user has entered into the text field.
         onPressed: () async {
+          var collection = FirebaseFirestore.instance.collection('users');
+    var querySnapshot =  await collection 
+    .where('someField', isEqualTo: widget.toID)
+    .get();
+
+    for (var snapshot in querySnapshot.docs) {
+      Map<String, dynamic> data = snapshot.data();
+    
           final User user = auth.currentUser;
           await sendMessage(uid: user.uid).updatePost(content, widget.fromID, widget.toID);
+          await sendRating().updateRatings(int.parse(rating), widget.toID, data['uid']);
           showDialog(
             context: context,
             builder: (context) {
@@ -159,10 +180,13 @@ class _MyCustomFormState extends State<MyCustomForm> {
               );
             },
           );
+    } 
         },
         tooltip: 'Post!',
         child: const Icon(Icons.post_add),
       ),
+        ]
+      )
     );
   }
 }

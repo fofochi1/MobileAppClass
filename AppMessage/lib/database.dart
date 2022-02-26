@@ -17,6 +17,7 @@ class DatabaseService {
       'lastname': lastname,
       'registration': currentTime,
       'role': 'customer',
+      'uid': uid,
     });
   }
 }
@@ -52,4 +53,16 @@ class sendMessage{
          'timestamp': currentTime,
        });
      }
+}
+
+class sendRating{
+  final CollectionReference ratings = FirebaseFirestore.instance.collection('ratings');
+
+  Future updateRatings(int review, String user, String userID) async {
+    return await ratings.add({
+      'review': review,
+      'user': user,
+      'userID': userID,
+    });
+  }
 }
