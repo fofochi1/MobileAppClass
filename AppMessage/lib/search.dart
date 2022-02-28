@@ -1,11 +1,8 @@
-// ignore: import_of_legacy_library_into_null_safe
-// ignore_for_file: prefer_const_constructors
-
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fanpage/conversation.dart';
+import 'package:fanpage/home_screen.dart';
 import 'package:fanpage/post_screen.dart';
-import 'package:fanpage/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -53,46 +50,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildButton(BuildContext context, bool admin){
-        User user = FirebaseAuth.instance.currentUser;
     final dbRef = FirebaseDatabase.instance.reference().child('posts');
+        User user = FirebaseAuth.instance.currentUser;
+
     List<Map<dynamic, dynamic>> lists = [];
     final DocumentSnapshot document;
 
-    if(admin){
     return Scaffold(
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                showAlertDialog(context);
-              }
-              ),  
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context) => Profile()),
-                  );
-                },
-                icon: const Icon(Icons.account_circle),
-                ),    
+                
             ],
       ),
 
        body: StreamBuilder(
-         stream: FirebaseFirestore.instance.collection('conversations').snapshots(),
+         stream: FirebaseFirestore.instance.collection('users').snapshots(),
          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
            if(!snapshot.hasData){
              return Center(
                child: CircularProgressIndicator(),
                );
            }
-          
+
            return ListView(
              children: snapshot.data!.docs.map((document){
-               if(document['fromID'] == user.uid){}
+               if(document['uid'] == user.uid){}
                 return Column(
                   children: [
                     GestureDetector(
@@ -101,8 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       context,
                       ExtractArgumentsScreen.routeName,
                       arguments: ScreenArguments(
-                        document['fromID'],
-                        document['toID']
+                        user.uid,
+                        document['uid']
                       ),
                     );
                     },
@@ -118,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.height/10,
                     child: Column(
                       children: [
-                      Text(document['toID'], textAlign: TextAlign.center,),
+                      Text(document['username'], textAlign: TextAlign.center,),
                       ]
                     )
                     
@@ -150,99 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
           );
     }
-    else{
-      return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                showAlertDialog(context);
-                // _auth.signOut();
-                // Navigator.pop(context);
-
-              }),      
-            ],
-      ),
-      body: StreamBuilder(
-         stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-           if(!snapshot.hasData){
-             return Center(
-               child: CircularProgressIndicator(),
-               );
-           }
-
-           return ListView(
-             children: snapshot.data!.docs.map((document){
-                return Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width/1.2,
-                    height: MediaQuery.of(context).size.height/6,
-                    child: Column(
-                      children: [
-                      Text(document['post'], textAlign: TextAlign.center,),
-                      Text(DateFormat('yyyy-MM-dd – kk:mm').format(document['date'].toDate()), textAlign: TextAlign.center,)
-                      ]
-                    )                     
-                            
-                    ),
-                );
-             },
-           ).toList(),
-           );
-           }
-       ),
-
-      );
-    }
-    
-  }
-
-  showAlertDialog(BuildContext context) {
-
-  // set up the buttons
-  Widget cancelButton = TextButton(
-    child: Text("Cancel"),
-    onPressed:  () {
-        Navigator.of(context).pop();
-    },
-  );
-  Widget continueButton = TextButton(
-    child: Text("Logout"),
-    onPressed:  () {
-      googleSignIn.disconnect();
-      _auth.signOut();
-      Navigator.pop(context);
-      Navigator.pop(context);
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text("Are you sure"),
-    content: Text("Would you like to continue with logging off?"),
-    actions: [
-      cancelButton,
-      continueButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }
+
   
-}
 
-class ScreenArguments {
-  final String fromID;
-  final String toID;
 
-  ScreenArguments(this.fromID, this.toID);
-}
