@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fanpage/home_screen.dart';
+import 'package:fanpage/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'rounded_button.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -84,7 +87,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
-                        Navigator.pushNamed(context, 'home_screen');
+                        User username = FirebaseAuth.instance.currentUser;
+                        DocumentSnapshot userData = await FirebaseFirestore.instance.collection('users').doc(username.uid).get();
+                        UserModel userModel = UserModel.fromJson(userData);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) =>HomeScreen(userModel)));
                       }
                     } catch (e) {
                       print(e);

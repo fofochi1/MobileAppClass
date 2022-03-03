@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fanpage/conversation.dart';
 import 'package:fanpage/home_screen.dart';
 import 'package:fanpage/post_screen.dart';
+import 'package:fanpage/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -11,130 +12,97 @@ import 'package:intl/intl.dart';
 
 User? loggedinUser;
 
-class HomeScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget{
+  UserModel user;
+  SearchScreen(this.user);
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final _auth = FirebaseAuth.instance;
-  final googleSignIn = GoogleSignIn();
+class _SearchScreenState extends State<SearchScreen>{
+  TextEditingController searchController = TextEditingController();
+  List<Map> searchResult = [];
+  bool isLoading = false;
 
-  void initState() {
-    super.initState();
-    getCurrentUser();
-  }
-
-  //using this function you can use the credentials of the user
-  void getCurrentUser() async {
-    try {
-      final user = await _auth.currentUser;
-      if (user != null) {
-        loggedinUser = user;
+  void onSearch()async{
+    setState((){
+      searchResult = [];
+      isLoading = true;
+    });
+    await FirebaseFirestore.instance.collection('chatters').where("name", isEqualTo: searchController.text).get().then((value){
+      if(value.docs.length < 1){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No User")));
+        setState((){
+          isLoading = false;
+        });
+        return;
       }
-    } catch (e) {
-      print(e);
-    }
+      value.docs.forEach((user) {
+        if(user.data()['email'] != widget.user.email){
+          searchResult.add(user.data());
+        }
+      });
+      setState((){
+        isLoading = true;
+    });
+    });
   }
-
-
-  
   @override
-  Widget build(BuildContext context) {
-    User user = FirebaseAuth.instance.currentUser;
-    bool admin = false;
-    if(user.uid == 'OHzUFdlHDsWJNRNlLSyWe2cgWxo2'){
-      admin = true;
-    }
-      return buildButton(context, admin);
-  }
-
-  Widget buildButton(BuildContext context, bool admin){
-    final dbRef = FirebaseDatabase.instance.reference().child('posts');
-        User user = FirebaseAuth.instance.currentUser;
-
-    List<Map<dynamic, dynamic>> lists = [];
-    final DocumentSnapshot document;
-
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-                
-            ],
+        title: Text("Search"),
       ),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child:TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: "Type user",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10)
+                  )
+                ),
+              ),
+              ),
+              ),
+              IconButton(onPressed: (){
+                onSearch();
 
-       body: StreamBuilder(
-         stream: FirebaseFirestore.instance.collection('users').snapshots(),
-         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-           if(!snapshot.hasData){
-             return Center(
-               child: CircularProgressIndicator(),
-               );
-           }
-
-           return ListView(
-             children: snapshot.data!.docs.map((document){
-               if(document['uid'] == user.uid){}
-                return Column(
-                  children: [
-                    GestureDetector(
-                    onTap:(){
-                      Navigator.pushNamed(
-                      context,
-                      ExtractArgumentsScreen.routeName,
-                      arguments: ScreenArguments(
-                        user.uid,
-                        document['uid']
-                      ),
-                    );
-                    },
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.blue,
-                        ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    width: MediaQuery.of(context).size.width/1.2,
-                    height: MediaQuery.of(context).size.height/10,
-                    child: Column(
-                      children: [
-                      Text(document['username'], textAlign: TextAlign.center,),
-                      ]
-                    )
-                    
-                     
-                            
-                    ),
-                  ]
+              }, icon: Icon(Icons.search))
+              
+            ]
+          ),
+          if(searchResult.length > 0)
+            Expanded(child: ListView.builder(
+              itemCount: searchResult.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index){
+                return ListTile(
+                  title: Text(searchResult[index]["name"]),
+                  trailing: IconButton(onPressed: (){
+                    setState((){
+                      searchController.text = '';
+                    });
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>conversationScreen(
+                      currentUser: widget.user,
+                      toID: searchResult[index]['uid'],
+                      toName: searchResult[index]['name'],
+                    )));
+                  }, icon: Icon(Icons.message)),
                 );
-             },
-           ).toList(),
-           );
-           }
-       ),
-
-      bottomNavigationBar: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>  PostScreen()),
-                    );
-                  },
-                  child: Icon(Icons.add, color: Colors.white),
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(20),
-                    primary: Colors.blue, // <-- Button color
-                    onPrimary: Colors.red, // <-- Splash color
-                    ),
-                  ),
-          );
-    }
+              }
+            ))
+          else if(isLoading == true)
+            Center(child: CircularProgressIndicator(),)
+        ],
+      )
+    );
+  }
 }
-
-  
-
-

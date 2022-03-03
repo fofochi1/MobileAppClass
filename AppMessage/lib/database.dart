@@ -66,3 +66,14 @@ class sendRating{
     });
   }
 }
+
+class startConversation{
+  final CollectionReference convos = FirebaseFirestore.instance.collection('conversations');
+
+  Future startConvos(String fromID, String toID) async {
+    return await convos.add({
+      'fromID': fromID,
+      'toID': toID,
+    });
+  }
+}

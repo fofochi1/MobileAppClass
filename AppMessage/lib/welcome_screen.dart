@@ -1,3 +1,5 @@
+import 'package:fanpage/login_screen.dart';
+import 'package:fanpage/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'rounded_button.dart';
 
@@ -24,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     textStyle: const TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, 'login_screen');
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>LoginScreen()));
                   },
                   child: const Text('Log In'),
                 ),
@@ -35,7 +37,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     textStyle: const TextStyle(fontSize: 20),
                   ),
                     onPressed: () {
-                      Navigator.pushNamed(context, 'registration_screen');
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>RegistrationScreen()));
                     },
                     child: const Text('Register'),
                     ),
