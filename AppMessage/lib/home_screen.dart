@@ -39,6 +39,42 @@ class _HomeScreenState extends State<HomeScreen> {
           }, icon: Icon(Icons.logout))
         ],
       ),
+
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('chatters').doc(widget.user.uid).collection('messages').snapshots(),
+        builder: (context, AsyncSnapshot snapshot){
+          if(snapshot.hasData){
+            if(snapshot.data.docs.length < 1){
+              return Center(
+                child: Text("No Conversations"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data.docs.length,
+              itemBuilder:(context, index){
+                var friendName = snapshot.data.docs[index].id;
+      
+                return FutureBuilder(
+                  future: FirebaseFirestore.instance.collection('chatters').doc(friendName).get(),
+                  builder: (context, AsyncSnapshot asyncSnapshot){
+                    if(asyncSnapshot.hasData){
+                      var friend = asyncSnapshot.data;
+                      return ListTile(
+                        title: Text(friend['name']),
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => conversationScreen(currentUser: widget.user, toID: friend['uid'], toName: friend['name'])));
+                        }
+                      );
+                    }
+                    return LinearProgressIndicator();
+                  },
+                );
+              }
+            );
+          }
+          return Center(child: CircularProgressIndicator(),);
+        }
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: (){

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MessageField extends StatefulWidget{
@@ -35,7 +36,31 @@ class _MessageFieldState extends State<MessageField>{
           SizedBox(width: 20,),
           GestureDetector(
             onTap: ()async{
+              String message = controller.text;
+              controller.clear();
+              await FirebaseFirestore.instance.collection('chatters').doc(widget.currentId).collection('messages').doc(widget.toId).collection('chats').add({
+                "senderId":widget.currentId,
+                "receiverId":widget.toId,
+                "message": message,
+                "type": "text",
+                "date": DateTime.now(),
+              }).then((value){
+                FirebaseFirestore.instance.collection('chatters').doc(widget.currentId).collection('messages').doc(widget.toId).set({
+                  'last_message':message,
+                });
+            });
 
+            await FirebaseFirestore.instance.collection('chatters').doc(widget.toId).collection('messages').doc(widget.currentId).collection('chats').add({
+              "senderId":widget.currentId,
+              "receiverId":widget.toId,
+              "message":message,
+              "type":"text",
+              "date":DateTime.now(),
+            }).then((value){
+              FirebaseFirestore.instance.collection('chatters').doc(widget.toId).collection('messages').doc(widget.currentId).set({
+                'last_message':message,
+              });
+            });
             },
             child: Container(
               padding: EdgeInsets.all(8),
