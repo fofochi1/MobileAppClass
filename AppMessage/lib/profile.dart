@@ -29,7 +29,7 @@ class _ProfileState extends State<Profile> {
 
     var number = FirebaseFirestore.instance
       .collection('ratings')
-      .where('userID', isEqualTo: user.uid).get();
+      .where('userId', isEqualTo: user.uid).get();
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +38,7 @@ class _ProfileState extends State<Profile> {
       ),
 
 body: StreamBuilder(
-         stream: FirebaseFirestore.instance.collection('ratings').where("userID", isEqualTo: user.uid).snapshots(),
+         stream: FirebaseFirestore.instance.collection('ratings').where("userId", isEqualTo: user.uid).snapshots(),
          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
            if(!snapshot.hasData){
              return Center(
@@ -61,8 +61,8 @@ body: StreamBuilder(
                     //child: Text(document['post']),
                     child: Column(
                       children: [
-                      Text(document['user'], textAlign: TextAlign.center,),
-                      Text(document['review'].toString(), textAlign: TextAlign.center,),
+                      Text("One of your ratings is: " + document['rating'].toString(), textAlign: TextAlign.center,),
+                      // Text(document['rating'].toString(), textAlign: TextAlign.center,),
 
                       ]
                     )

@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fanpage/add_rating.dart';
 import 'package:fanpage/user_model.dart';
 import 'package:fanpage/widgets/message_text.dart';
 import 'package:fanpage/widgets/single.dart';
@@ -23,7 +24,14 @@ class conversationScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
         title: Row(
           children: [
-            Text(toName,style: TextStyle(fontSize:20),)
+            Text(toName,style: TextStyle(fontSize:20),),
+            IconButton(onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>AddRating(
+                  toID: toID,
+                  currentID: currentUser,
+                )));
+
+              }, icon: Icon(Icons.add))
           ],
         )
       ),
